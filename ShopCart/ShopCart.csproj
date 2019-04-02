@@ -177,6 +177,7 @@
     <Content Include="Views\Login\Login.cshtml" />
     <Content Include="Views\Login\Gallery.cshtml" />
     <Content Include="Views\Shared\PartialGallery.cshtml" />
+    <Content Include="Views\Login\Purchase.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

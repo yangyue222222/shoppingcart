@@ -1,0 +1,23 @@
+﻿@using ShopCart.Models
+
+@{
+    var products = ViewBag.Products;
+    var purchase = ViewBag.Purchases;
+}
+<table>
+    @foreach (var product in products)
+    {
+        foreach (var item in purchase)
+        {
+            if (product.pro_id == item.pro_id)
+            {
+            <tr>
+                <td>@product.pro_id</td>
+                <td>@item.activation_code</td>
+                <td>@item.purchase_time</td>
+            </tr>
+            }
+        }
+    }
+
+</table>

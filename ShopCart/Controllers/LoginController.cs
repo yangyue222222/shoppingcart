@@ -28,6 +28,7 @@ namespace ShopCart.Controllers
             string sessionId = CreateSession(customer.customer_id);
             ViewData["sessionId"] = sessionId;
             ViewBag.a = 1;
+            ViewBag.customer = customer.customer_id;
             return View("Gallery");
         }
         //public ActionResult Gallery(string sessionId)
@@ -66,6 +67,42 @@ namespace ShopCart.Controllers
             ViewData["partial"] = pro;
             ViewBag.a = 2;
             return View("Gallery");
+        }
+        public ActionResult Purchase(string customer_id)
+        {
+            List<Product> pro = new List<Product>();
+            List<PurchaseItems> items = new List<PurchaseItems>();
+
+            Debug.WriteLine(customer_id);
+            using (SqlConnection conn = new SqlConnection(("Server=DESKTOP-C2V6TC0; Database=ShoppingCartT4; Integrated Security=true")))
+            {
+                conn.Open();
+
+                string sql = @"select * from Purchaseitem p join Customer c on c.customer_id = p.customer_id join Product po on po.pro_id = p.pro_id where c.customer_id = '" + customer_id + "'";
+                SqlCommand cmd = new SqlCommand(sql, conn);
+
+                SqlDataReader reader = cmd.ExecuteReader();
+                while (reader.Read())
+                {
+                    Product p = new Product();
+                    PurchaseItems i = new PurchaseItems();
+
+                    p.pro_id = (int)reader["pro_id"];
+                    p.pro_name = (string)reader["pro_name"];
+                    p.pro_desc = (string)reader["pro_desc"];
+                    p.pro_price = (int)reader["pro_price"];
+                    p.pro_image = (string)reader["pro_image"];
+                    i.pro_id = (int)reader["pro_id"];
+                    i.activation_code = (string)reader["activation_code"];
+                    i.purchase_time = (DateTime)reader["purchase_time"];
+
+                    pro.Add(p);
+                    items.Add(i);
+                }
+            }
+            ViewBag.Products = pro;
+            ViewBag.Purchases = items;
+            return View();
         }
         public List<Product> callme()
         {
@@ -134,7 +171,7 @@ namespace ShopCart.Controllers
             using (SqlConnection conn = new SqlConnection("Server=DESKTOP-C2V6TC0; Database=ShoppingCartT4; Integrated Security=true"))
             {
                 conn.Open();
-                string sql = @"UPDATE Customer SET sessionid = '" + sessionId + "'" + " WHERE customer_id =" + customer_id;
+                string sql = @"UPDATE Customer SET session_id = '" + sessionId + "'" + " WHERE customer_id =" + customer_id;
                 SqlCommand cmd = new SqlCommand(sql, conn);
                 cmd.ExecuteNonQuery();
             }
@@ -148,7 +185,7 @@ namespace ShopCart.Controllers
             using (SqlConnection conn = new SqlConnection("Server=DESKTOP-C2V6TC0; Database=ShoppingCartT4; Integrated Security=true"))
             {
                 conn.Open();
-                string sql = @"UPDATE Customer SET sessionid = NULL WHERE sessionid = '" + sessionId + "'";
+                string sql = @"UPDATE Customer SET session_id = NULL WHERE sessionid = '" + sessionId + "'";
                 SqlCommand cmd = new SqlCommand(sql, conn);
                 cmd.ExecuteNonQuery();
             }
