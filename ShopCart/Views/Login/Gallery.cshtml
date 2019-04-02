@@ -1,0 +1,40 @@
+﻿@using ShopCart.Models
+
+
+@{
+    var sessionId = ViewData["sessionId"];
+    ViewBag.Title = "Gallery";
+}
+
+@Html.ActionLink("Logout", "Logout", "Login", new { sessionId = @sessionId }, null)
+
+<input type="hidden" value="@sessionId" />
+<form action="/Login/Partial" method="post">
+    <input type="text" id="search" name="search" />
+    <input type="submit"  value="Search" />
+</form>
+
+@{ 
+    if (ViewBag.a == 1)
+    {
+    <table>
+    @foreach (var product in (List<Product>)ViewData["pl"])
+    {
+        <tr>
+            <td>@product.pro_id</td>
+            <td>@product.pro_name</td>
+            <td>@product.pro_desc</td>
+            <td>@product.pro_price</td>
+            <td><img src="~/images/@product.pro_image" /></td>
+        </tr>
+    }
+
+
+    </table>
+    }
+    else
+    {
+    @Html.Partial("PartialGallery")
+    }
+}
+
